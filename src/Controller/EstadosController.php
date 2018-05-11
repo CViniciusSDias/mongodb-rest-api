@@ -46,4 +46,26 @@ class EstadosController
         $response->getBody()->write(json_encode($estado));
         return $response;
     }
+
+    public function atualizar(RequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+    {
+        $estado = new Estado();
+        $dados = json_decode($request->getBody()->getContents(), true);
+
+        $estado = $this->repository->atualizar($args['id'], $estado->hidrate($dados));
+        $response->getBody()->write(json_encode($estado));
+
+        return $response;
+    }
+
+    public function remover(RequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+    {
+        $qtd = $this->repository->remover($args['id']);
+        $response->getBody()->write(json_encode([
+            'id' => $args['id'],
+            'quantidadeDeletados' => $qtd
+        ]));
+
+        return $response;
+    }
 }

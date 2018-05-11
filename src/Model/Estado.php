@@ -20,6 +20,12 @@ class Estado implements \JsonSerializable
     private $dataCriacao;
     private $dataUltimaAlteracao;
 
+    public function __construct()
+    {
+        $this->setDataCriacao(date('Y-m-d'));
+        $this->setDataUltimaAlteracao(date('Y-m-d'));
+    }
+
     /**
      * @return string
      */
@@ -117,12 +123,17 @@ class Estado implements \JsonSerializable
 
     public function jsonSerialize()
     {
-        $dados = array_filter(get_object_vars($this));
+        $dados = $this->toArray();
         $dados['links'] = [[
             'rel' => 'self',
             'href' => '/estados/' . $this->getId()
         ]];
 
         return $dados;
+    }
+
+    public function toArray(): array
+    {
+        return $dados = array_filter(get_object_vars($this));
     }
 }

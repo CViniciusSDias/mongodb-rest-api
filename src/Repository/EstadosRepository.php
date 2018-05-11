@@ -24,7 +24,7 @@ class EstadosRepository
 
     public function inserir(Estado $estado): Estado
     {
-        $result = $this->mongoCollection->insertOne($estado->jsonSerialize());
+        $result = $this->mongoCollection->insertOne($estado->toArray());
         $objectId = (string) $result->getInsertedId();
         return $estado->setId($objectId);
     }
@@ -41,10 +41,28 @@ class EstadosRepository
         return $estadoList;
     }
 
-    public function listarUm($id)
+    public function listarUm(string $id)
     {
         /** @var BSONDocument $result */
         $result = $this->mongoCollection->findOne(['_id' => new ObjectId($id)]);
         return (new Estado())->hidrate($result->getArrayCopy());
+    }
+
+    public function atualizar(string $id, Estado $estado): Estado
+    {
+        /** @var BSONDocument $result */
+        $result = $this->mongoCollection->findOneAndUpdate(
+            ['_id' => new ObjectId($id)],
+            ['$set' => $estado->toArray()]
+        );
+        $estadoOriginal = (new Estado())->hidrate($result->getArrayCopy());
+
+        return $estadoOriginal->hidrate($estado->toArray());
+    }
+
+    public function remover(string $id): int
+    {
+        $result = $this->mongoCollection->deleteOne(['_id' => new ObjectId($id)]);
+        return $result->getDeletedCount();
     }
 }
