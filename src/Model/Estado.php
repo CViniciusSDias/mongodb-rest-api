@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CViniciusSDias\MongoDbRestApi\Model;
 
+use CViniciusSDias\MongoDbRestApi\Exception\ValidacaoException;
 use CViniciusSDias\MongoDbRestApi\Service\ConversorDeData;
 use MongoDB\BSON\UTCDateTime;
 
@@ -19,12 +20,6 @@ class Estado implements \JsonSerializable
     private $sigla;
     private $dataCriacao;
     private $dataUltimaAlteracao;
-
-    public function __construct()
-    {
-        $this->setDataCriacao(date('Y-m-d'));
-        $this->setDataUltimaAlteracao(date('Y-m-d'));
-    }
 
     /**
      * @return string
@@ -76,6 +71,10 @@ class Estado implements \JsonSerializable
      */
     public function setSigla(string $sigla): Estado
     {
+        if (false === filter_var($sigla, FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^[A-Z]{2}$/']])) {
+            throw new ValidacaoException('A sigla de um estado deve conter apenas 2 letras maiúsculas');
+        }
+
         $this->sigla = $sigla;
         return $this;
     }

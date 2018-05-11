@@ -24,8 +24,17 @@ class EstadosRepository
 
     public function inserir(Estado $estado): Estado
     {
+        if (is_null($estado->getDataCriacao())) {
+            $estado->setDataCriacao(date('Y-m-d'));
+        }
+
+        if (is_null($estado->getDataUltimaAlteracao())) {
+            $estado->setDataUltimaAlteracao(date('Y-m-d'));
+        }
+
         $result = $this->mongoCollection->insertOne($estado->toArray());
         $objectId = (string) $result->getInsertedId();
+
         return $estado->setId($objectId);
     }
 

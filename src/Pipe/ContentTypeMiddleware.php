@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class ContentTypeMiddleware
 {
-    public function __invoke(RequestInterface $request, ResponseInterface $response, $next)
+    public function __invoke(RequestInterface $request, ResponseInterface $response, $next): ResponseInterface
     {
         /** @var ResponseInterface $response */
         $response = $next($request, $response);
