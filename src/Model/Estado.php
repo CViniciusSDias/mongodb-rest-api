@@ -101,7 +101,7 @@ class Estado implements \JsonSerializable
         return $this;
     }
 
-    public function getDataUltimaAlteracao(): UTCDateTime
+    public function getDataUltimaAlteracao(): ?UTCDateTime
     {
         return $this->dataUltimaAlteracao;
     }

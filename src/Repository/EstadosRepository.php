@@ -9,6 +9,7 @@ use MongoDB\BSON\ObjectId;
 use MongoDB\Collection;
 use MongoDB\Database;
 use MongoDB\Model\BSONDocument;
+use Psr\SimpleCache\CacheInterface;
 
 class EstadosRepository
 {
@@ -16,10 +17,15 @@ class EstadosRepository
      * @var Collection
      */
     private $mongoCollection;
+    /**
+     * @var CacheInterface
+     */
+    private $cache;
 
-    public function __construct(Database $mongoDatabase)
+    public function __construct(Database $mongoDatabase, CacheInterface $cache)
     {
         $this->mongoCollection = $mongoDatabase->selectCollection('estados');
+        $this->cache = $cache;
     }
 
     public function inserir(Estado $estado): Estado
@@ -40,12 +46,16 @@ class EstadosRepository
 
     public function listarTodos(): array
     {
+        if ($this->cache->has('estados')) {
+            return unserialize($this->cache->get('estados'));
+        }
         $result = $this->mongoCollection->find();
         $estadoList = [];
         /** @var BSONDocument $estado */
         foreach ($result->toArray() as $estado) {
             $estadoList[] = (new Estado())->hidrate($estado->getArrayCopy());
         };
+        $this->cache->set('estados', serialize($estadoList), new \DateInterval('PT1M'));
 
         return $estadoList;
     }

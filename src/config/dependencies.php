@@ -5,6 +5,7 @@ use CViniciusSDias\MongoDbRestApi\Controller\EstadosController;
 use CViniciusSDias\MongoDbRestApi\Repository\EstadosRepository;
 use MongoDB\Client;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 $container = $app->getContainer();
 
@@ -29,9 +30,13 @@ $container['mongo'] = function () {
 };
 
 $container[EstadosRepository::class] = function (ContainerInterface  $c) {
-    return new EstadosRepository($c->get('mongo'));
+    return new EstadosRepository($c->get('mongo'), $c->get('cache'));
 };
 
 $container[EstadosController::class] = function (ContainerInterface $c) {
     return new EstadosController($c->get(EstadosRepository::class));
+};
+
+$container['cache'] = function (ContainerInterface $c) {
+    return new FilesystemCache();
 };
