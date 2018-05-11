@@ -29,6 +29,14 @@ class EstadosController
         return $response;
     }
 
+    public function listarUm(RequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+    {
+        $estado = $this->repository->listarUm($args['id']);
+        $response->getBody()->write(json_encode($estado));
+
+        return $response;
+    }
+
     public function inserir(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $estado = new Estado();

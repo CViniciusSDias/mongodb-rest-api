@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CViniciusSDias\MongoDbRestApi\Repository;
 
 use CViniciusSDias\MongoDbRestApi\Model\Estado;
+use MongoDB\BSON\ObjectId;
 use MongoDB\Collection;
 use MongoDB\Database;
 use MongoDB\Model\BSONDocument;
@@ -38,5 +39,12 @@ class EstadosRepository
         };
 
         return $estadoList;
+    }
+
+    public function listarUm($id)
+    {
+        /** @var BSONDocument $result */
+        $result = $this->mongoCollection->findOne(['_id' => new ObjectId($id)]);
+        return (new Estado())->hidrate($result->getArrayCopy());
     }
 }

@@ -9,7 +9,7 @@ use MongoDB\BSON\UTCDateTime;
 
 class Estado implements \JsonSerializable
 {
-    use HydratableTrait, JsonSerializableTrait;
+    use HydratableTrait;
 
     /** @var string */
     private $_id;
@@ -25,7 +25,7 @@ class Estado implements \JsonSerializable
      */
     public function getId(): string
     {
-        return $this->_id;
+        return (string) $this->_id;
     }
 
     /**
@@ -113,5 +113,16 @@ class Estado implements \JsonSerializable
         }
         $this->dataUltimaAlteracao = $dataUltimaAlteracao;
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        $dados = array_filter(get_object_vars($this));
+        $dados['links'] = [[
+            'rel' => 'self',
+            'href' => '/estados/' . $this->getId()
+        ]];
+
+        return $dados;
     }
 }
