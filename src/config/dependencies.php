@@ -2,18 +2,14 @@
 // DIC configuration
 
 use CViniciusSDias\MongoDbRestApi\Controller\EstadosController;
+use CViniciusSDias\MongoDbRestApi\Controller\CidadesController;
 use CViniciusSDias\MongoDbRestApi\Repository\EstadosRepository;
+use CViniciusSDias\MongoDbRestApi\Repository\CidadesRepository;
 use MongoDB\Client;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
 $container = $app->getContainer();
-
-// view renderer
-$container['renderer'] = function ($c) {
-    $settings = $c->get('settings')['renderer'];
-    return new Slim\Views\PhpRenderer($settings['template_path']);
-};
 
 // monolog
 $container['logger'] = function ($c) {
@@ -29,14 +25,22 @@ $container['mongo'] = function () {
     return $mongo->selectDatabase('prova');
 };
 
+$container['cache'] = function (ContainerInterface $c) {
+    return new FilesystemCache();
+};
+
 $container[EstadosRepository::class] = function (ContainerInterface  $c) {
     return new EstadosRepository($c->get('mongo'), $c->get('cache'));
+};
+
+$container[CidadesRepository::class] = function (ContainerInterface  $c) {
+    return new CidadesRepository($c->get('mongo'), $c->get('cache'));
 };
 
 $container[EstadosController::class] = function (ContainerInterface $c) {
     return new EstadosController($c->get(EstadosRepository::class));
 };
 
-$container['cache'] = function (ContainerInterface $c) {
-    return new FilesystemCache();
+$container[CidadesController::class] = function (ContainerInterface $c) {
+    return new CidadesController($c->get(CidadesRepository::class));
 };
