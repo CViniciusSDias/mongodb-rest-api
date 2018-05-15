@@ -20,9 +20,10 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
-$container['mongo'] = function () {
-    $mongo = new Client('mongodb://localhost:27017');
-    return $mongo->selectDatabase('prova');
+$container['mongo'] = function ($c) {
+    $settings = $c->get('settings')['mongo'];
+    $mongo = new Client("mongodb://{$settings['host']}:{$settings['port']}");
+    return $mongo->selectDatabase($settings['base']);
 };
 
 $container['cache'] = function (ContainerInterface $c) {
