@@ -23,7 +23,21 @@ abstract class BaseController
 
     public function listarTodos(RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $modelList = $this->repository->listarTodos();
+        parse_str($request->getUri()->getQuery(), $parametros);
+        $options = [];
+        if (array_key_exists('orderByField', $parametros)) {
+            $options['sort'] = [$parametros['orderByField'] => 1];
+
+            if (array_key_exists('orderByDirection', $parametros)
+                && strtoupper($parametros['orderByDirection']) === 'DESC'
+            ) {
+                $options['sort'] = [$parametros['orderByField'] => -1];
+                unset($parametros['orderByDirection']);
+            }
+            unset($parametros['orderByField']);
+        }
+
+        $modelList = $this->repository->listarTodos($parametros, $options);
         $response->getBody()->write(json_encode($modelList));
 
         return $response;

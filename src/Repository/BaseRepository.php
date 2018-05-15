@@ -45,21 +45,24 @@ abstract class BaseRepository
     }
 
     /**
+     * @param array $filtros
+     * @param array $opcoes
      * @return AbstractModel[]
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function listarTodos(): array
+    public function listarTodos(array $filtros = array(), array $opcoes = array()): array
     {
-        if ($this->cache->has($this->getCollectionName())) {
-            return unserialize($this->cache->get($this->getCollectionName()));
+        $chaveDeCache = md5($this->getCollectionName() . serialize($filtros) . serialize($opcoes));
+        if ($this->cache->has($chaveDeCache)) {
+            return unserialize($this->cache->get($chaveDeCache));
         }
-        $result = $this->mongoCollection->find();
+        $result = $this->mongoCollection->find($filtros, $opcoes);
         $modelList = [];
         /** @var BSONDocument $model */
         foreach ($result->toArray() as $model) {
             $modelList[] = $this->getModelInstance()->hidrate($model->getArrayCopy());
         }
-        $this->cache->set($this->getCollectionName(), serialize($modelList), new \DateInterval('PT1M'));
+        $this->cache->set($chaveDeCache, serialize($modelList), new \DateInterval('PT1M'));
 
         return $modelList;
     }
