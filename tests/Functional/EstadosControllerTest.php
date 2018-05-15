@@ -2,17 +2,17 @@
 
 namespace Tests\Functional;
 
+use CViniciusSDias\MongoDbRestApi\Model\Estado;
+
 class EstadosControllerTest extends BaseTestCase
 {
-	public function testInserirEstado()
-	{
-		$estado = new Estado();
-		$estado->setNome('Rio de Janeiro')
-		    ->setSigla('RJ');
-		$response = $this->runApp('POST', '/estados', json_encode($estado->toArray()));
-		
-		$this->assertEquals(200, $response->getStatusCode());
-		$this->assertContains('Rio de Janeiro', (string) $response->getBody());
-		$this->assertTrue(false !== json_decode((string) $response->getBody());
-	}
+    public function testRequestSemApiKey()
+    {
+        $estado = new Estado();
+        $estado->setNome('Rio de Janeiro')
+            ->setSigla('RJ');
+        $response = $this->runApp('GET', '/estados', $estado->toArray());
+
+        $this->assertEquals(401, $response->getStatusCode());
+    }
 }
