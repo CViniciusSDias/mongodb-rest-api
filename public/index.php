@@ -26,5 +26,6 @@ require __DIR__ . '/../src/config/middleware.php';
 // Register routes
 require __DIR__ . '/../src/config/routes.php';
 
+ini_set('display_errors', 1);
 // Run app
 $app->run();

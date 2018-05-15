@@ -1,17 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: cvinicius
- * Date: 11/05/2018
- * Time: 12:34
- */
+
+declare(strict_types=1);
 
 namespace CViniciusSDias\MongoDbRestApi\Model;
 
-
 trait HydratableTrait
 {
-    public function hidrate(array $dados): self
+    public function hidrate(array $dados)
     {
         foreach ($dados as $propriedade => $valor) {
             $this->hidratePropriedade($propriedade, $valor);
