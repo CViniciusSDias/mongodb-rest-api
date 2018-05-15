@@ -58,10 +58,16 @@ class Estado extends AbstractModel implements \JsonSerializable
     public function jsonSerialize()
     {
         $dados = $this->toArray();
-        $dados['links'] = [[
-            'rel' => 'self',
-            'href' => '/estados/' . $this->getId()
-        ]];
+        $dados['links'] = [
+            [
+                'rel' => 'self',
+                'href' => '/estados/' . $this->getId()
+            ],
+            [
+                'rel' => 'cidades',
+                'href' => '/cidades?estadoId=' . $this->getId()
+            ]
+        ];
 
         return $dados;
     }

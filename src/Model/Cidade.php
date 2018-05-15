@@ -34,9 +34,15 @@ class Cidade extends AbstractModel implements \JsonSerializable
     /**
      * @return string
      */
-    public function getCidadeId(): string
+    public function getEstadoId(): string
     {
         return $this->estadoId;
+    }
+
+    public function setEstadoId(string $estadoId): Cidade
+    {
+        $this->estadoId = $estadoId;
+        return $this;
     }
 
     /**
@@ -59,10 +65,16 @@ class Cidade extends AbstractModel implements \JsonSerializable
     public function jsonSerialize()
     {
         $dados = $this->toArray();
-        $dados['links'] = [[
-            'rel' => 'self',
-            'href' => '/cidades/' . $this->getId()
-        ]];
+        $dados['links'] = [
+            [
+                'rel' => 'self',
+                'href' => '/cidades/' . $this->getId()
+            ],
+            [
+                'rel' => 'estado',
+                'href' => '/estados/' . $this->getEstadoId()
+            ]
+        ];
 
         return $dados;
     }

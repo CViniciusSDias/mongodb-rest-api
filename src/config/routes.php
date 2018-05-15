@@ -1,5 +1,6 @@
 <?php
 
+use CViniciusSDias\MongoDbRestApi\Controller\CidadesController;
 use CViniciusSDias\MongoDbRestApi\Controller\EstadosController;
 
 // Routes
