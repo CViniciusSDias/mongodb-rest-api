@@ -39,7 +39,7 @@ $container[CidadesRepository::class] = function (ContainerInterface  $c) {
 };
 
 $container[EstadosController::class] = function (ContainerInterface $c) {
-    return new EstadosController($c->get(EstadosRepository::class));
+    return new EstadosController($c->get(EstadosRepository::class), $c->get(CidadesRepository::class));
 };
 
 $container[CidadesController::class] = function (ContainerInterface $c) {
